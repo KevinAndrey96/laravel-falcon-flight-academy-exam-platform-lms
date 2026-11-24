@@ -1,0 +1,56 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: falcon_aviation_app
+    restart: unless-stopped
+    ports:
+      - "8099:80"
+    environment:
+      APP_NAME: "Falcon Flight Academy"
+      APP_ENV: local
+      APP_KEY: base64:cGFzc3dvcmRmb3JmYWxjb25mbGlnaHRhY2FkZW15MTIzNA==
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8099
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: falcon_flight_academy
+      DB_USERNAME: falcon_user
+      DB_PASSWORD: falcon_secure_password
+      CACHE_DRIVER: file
+      SESSION_DRIVER: file
+      QUEUE_CONNECTION: sync
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+    depends_on:
+      - db
+    networks:
+      - falcon_network
+
+  db:
+    image: mysql:8.0
+    container_name: falcon_aviation_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secure_password
+      MYSQL_DATABASE: falcon_flight_academy
+      MYSQL_USER: falcon_user
+      MYSQL_PASSWORD: falcon_secure_password
+    ports:
+      - "5439:3306"
+    volumes:
+      - falcon_mysql_data:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - falcon_network
+
+networks:
+  falcon_network:
+    driver: bridge
+
+volumes:
+  falcon_mysql_data:
+    driver: local

@@ -1,97 +1,114 @@
 @extends('layouts.app')
-<!--<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-6 offset-3">
-			
-		</div>
-	</div>
-	
-</div>-->
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Editar Pregunta</div>
+        <div class="col-lg-10">
+            <div class="card card-falcon">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-edit mr-2 text-warning"></i> Editar Pregunta Aeronáutica #{{ $questions->id }}</span>
+                    <a href="{{ route('questions.index') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left mr-1"></i> Volver al Banco
+                    </a>
+                </div>
 
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="POST" action="{{ route('questions.update', $questions->id) }}">
-                    	@method('PATCH')
-                    	@csrf
-                    	{{ csrf_field() }}
-                    	<div class="form-group">
-							<label for="title" class="negrita">Título:</label> 
-							<div>
-								<input class="form-control" placeholder="Nombre del cuestionario" required="required" name="title" type="text" id="title" value="{{ $questions->title }}"> 
-							</div>
-						</div>
-					 
-						<div class="form-group">
-							<label for="area" class="negrita">Area:</label> 
-							<div>
-								<input class="form-control" placeholder="Area de conocimiento" required="required" name="area" type="text" id="area" value="{{ $questions->area }}"> 
-							</div>
-						</div>
+                        @csrf
+                        @method('PATCH')
 
-						<div class="form-group">
-							<label for="question" class="negrita">Pregunta:</label> 
-							<div>
-								<input class="form-control" placeholder="Pregunta" required="required" name="question" type="text" id="question" value="{{ $questions->question }}"> 
-							</div>
-						</div>
-					 
-					 
-						<div class="form-group">
-							<label for="answer" class="negrita">Respuesta:</label> 
-							<div>
-								<select class="form-control" name="answer" id="answer">
-									<option value="{{ $questions->answer }}" selected>{{ $questions->answer }}</option>
-									<option value="A">A</option>
-									<option value="B">B</option>
-									<option value="C">C</option>
-									<option value="D">D</option>
-									<option value="E">E</option>
-								</select>
-							</div>
-						</div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="title" class="font-weight-bold">Nombre del Cuestionario / Examen: <span class="text-danger">*</span></label>
+                                <input class="form-control @error('title') is-invalid @enderror" 
+                                       required 
+                                       name="title" 
+                                       type="text" 
+                                       id="title" 
+                                       value="{{ old('title', $questions->title) }}">
+                                @error('title')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-						<div class="form-group">
-							<label for="optionA" class="negrita">Opción A</label> 
-							<div>
-								<input class="form-control" placeholder="Opción A" name="optionA" type="text" id="optionA" value="{{ $questions->optionA }}"> 
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="optionB" class="negrita">Opción B</label> 
-							<div>
-								<input class="form-control" placeholder="Opción B" name="optionB" type="text" id="optionB" value="{{ $questions->optionB }}"> 
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="optionC" class="negrita">Opción C</label> 
-							<div>
-								<input class="form-control" placeholder="Opción C" name="optionC" type="text" id="optionC" value="{{ $questions->optionC }}"> 
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="optionD" class="negrita">Opción D</label> 
-							<div>
-								<input class="form-control" placeholder="Opción D" name="optionD" type="text" id="optionD" value="{{ $questions->optionD }}"> 
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="optionE" class="negrita">Opción E</label> 
-							<div>
-								<input class="form-control" placeholder="Opción E" name="optionE" type="text" id="optionE" value="{{ $questions->optionE }}"> 
-							</div>
-						</div>
+                            <div class="col-md-6 form-group">
+                                <label for="area" class="font-weight-bold">Área Técnica Aeronáutica: <span class="text-danger">*</span></label>
+                                <input class="form-control @error('area') is-invalid @enderror" 
+                                       required 
+                                       name="area" 
+                                       type="text" 
+                                       id="area" 
+                                       value="{{ old('area', $questions->area) }}">
+                                @error('area')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
 
-						<button type="submit" class="btn btn-info">Guardar</button>
-						<a href="{{ route('home') }}" class="btn btn-warning">Cancelar</a>
+                        <div class="form-group">
+                            <label for="question" class="font-weight-bold">Enunciado de la Pregunta: <span class="text-danger">*</span></label>
+                            <textarea class="form-control @error('question') is-invalid @enderror" 
+                                      required 
+                                      rows="3" 
+                                      name="question" 
+                                      id="question">{{ old('question', $questions->question) }}</textarea>
+                            @error('question')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-					</form>
+                        <div class="form-group">
+                            <label for="answer" class="font-weight-bold text-success">
+                                <i class="fas fa-check-circle mr-1"></i> Opción Correcta (Clave de Calificación): <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control border-success font-weight-bold @error('answer') is-invalid @enderror" required name="answer" id="answer">
+                                @foreach(['A', 'B', 'C', 'D', 'E'] as $letter)
+                                    <option value="{{ $letter }}" {{ old('answer', $questions->answer) === $letter ? 'selected' : '' }}>
+                                        Opción {{ $letter }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('answer')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
 
+                        <div class="card p-3 bg-light mb-4">
+                            <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-list-ul mr-1"></i> Alternativas de Respuesta</h6>
+                            
+                            <div class="form-group">
+                                <label for="optionA" class="font-weight-bold">Opción A: <span class="text-danger">*</span></label>
+                                <input class="form-control" required name="optionA" type="text" id="optionA" value="{{ old('optionA', $questions->optionA) }}">
+                            </div>
 
+                            <div class="form-group">
+                                <label for="optionB" class="font-weight-bold">Opción B:</label>
+                                <input class="form-control" name="optionB" type="text" id="optionB" value="{{ old('optionB', $questions->optionB) }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="optionC" class="font-weight-bold">Opción C:</label>
+                                <input class="form-control" name="optionC" type="text" id="optionC" value="{{ old('optionC', $questions->optionC) }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="optionD" class="font-weight-bold">Opción D:</label>
+                                <input class="form-control" name="optionD" type="text" id="optionD" value="{{ old('optionD', $questions->optionD) }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="optionE" class="font-weight-bold">Opción E:</label>
+                                <input class="form-control" name="optionE" type="text" id="optionE" value="{{ old('optionE', $questions->optionE) }}">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ route('questions.index') }}" class="btn btn-secondary mr-2">Cancelar</a>
+                            <button type="submit" class="btn btn-falcon-primary font-weight-bold px-4">
+                                <i class="fas fa-save mr-1"></i> Actualizar Pregunta
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

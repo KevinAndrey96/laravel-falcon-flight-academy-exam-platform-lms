@@ -1,0 +1,43 @@
+name: CI - Falcon Flight Academy Exam Platform
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  lint-and-validate:
+    name: PHP Lint & Code Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, pdo, pdo_mysql, bcmath, gd
+
+      - name: Validate composer.json
+        run: composer validate --no-check-all --strict
+
+      - name: Syntax Lint Check (PHP CLI)
+        run: |
+          find app routes database -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Run Aviation Exam Engine Python Test Suite
+        run: |
+          python3 scripts/test_exam_engine.py
+
+      - name: Validate SQL Seed Data
+        run: |
+          python3 -c "
+          with open('docker/init.sql', 'r') as f:
+              content = f.read()
+          assert 'CREATE TABLE IF NOT EXISTS \`questions\`' in content
+          assert 'Piloto Comercial (PCA)' in content
+          assert 'Reglamentación Aeronáutica de Colombia (RAC)' in content
+          print('[✓] docker/init.sql verified successfully!')
+          "

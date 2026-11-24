@@ -17,13 +17,13 @@ class CreateQuestionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('area');
-            $table->string('question');
-            $table->string('answer');
-            $table->string('optionA');
-            $table->string('optionB');
-            $table->string('optionC');
-            $table->string('optionD');
-            $table->string('optionE');
+            $table->text('question');
+            $table->string('answer', 10);
+            $table->text('optionA');
+            $table->text('optionB')->nullable();
+            $table->text('optionC')->nullable();
+            $table->text('optionD')->nullable();
+            $table->text('optionE')->nullable();
             $table->timestamps();
         });
     }

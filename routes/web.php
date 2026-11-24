@@ -1,36 +1,29 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Web Routes - Falcon Escuela de Aviación
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| Examination Assessment Engine & Flight Academy LMS
+| Under standards of UAEAC (Aeronáutica Civil de Colombia) & RAC
 |
 */
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/select', 'HomeController@index')->name('select');
-/*Route::get('/questions/index', 'QuestionsController@index')->name('questions');
-Route::get('/questions/crear', 'QuestionsController@crear')->name('questions/crear');
-Route::post('/questions', 'QuestionsController@store');*/
+
+// Question Bank Administration (Instructor & Admin CRUD)
 Route::resource('/questions', 'QuestionsController');
-//Route::get('/cuestionarios', 'CuestionariosController');
-Route::view('/cuestionarios', 'index');
-Route::get('/cuestionarios', "CuestionariosController@index");
-/*Route::patch('/questions/crear',[
-    'as' => 'questions.store',
-    'uses' => 'QuestionsController@store'
-]);*/
-/*Route::get('/questions/crear',[
-    'as' => 'questions.store',
-    'uses' => 'QuestionsController@crear'
-]);*/
+
+// Aeronautical Examination Workflows (Student Pilot Testing & Scoring)
+Route::get('/cuestionarios', 'CuestionariosController@index')->name('cuestionarios.index');
+Route::get('/cuestionarios/{title}', 'CuestionariosController@show')->name('cuestionarios.show');
+Route::post('/cuestionarios/{title}/evaluar', 'CuestionariosController@evaluar')->name('cuestionarios.evaluar');
